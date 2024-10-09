@@ -79,7 +79,6 @@ function createRagdoll(x: number, y: number, scale: number) {
             }
         }
     );
-
     const chest = Bodies.rectangle(
         x,
         y,
@@ -98,26 +97,6 @@ function createRagdoll(x: number, y: number, scale: number) {
             }
         }
     );
-
-    const handle = Bodies.rectangle(
-        x + 39 * scale,
-        y + 50 * scale,
-        20 * scale,
-        20 * scale,
-        {
-            label: 'handle',
-            collisionFilter: {
-                group: Body.nextGroup(true)
-            },
-            chamfer: {
-                radius: 10 * scale
-            },
-            render: {
-                fillStyle: '#FFBC42'
-            }
-        }
-    );
-
     const defaultLimbOptions = {
         collisionFilter: {
             group: Body.nextGroup(true)
@@ -130,6 +109,16 @@ function createRagdoll(x: number, y: number, scale: number) {
         }
     };
 
+    const handle = Bodies.rectangle(
+        x + 39 * scale,
+        y + 50 * scale,
+        20 * scale,
+        20 * scale,
+        {
+            ...defaultLimbOptions,
+            label: 'handle'
+        }
+    );
     const rightUpperArm = Bodies.rectangle(
         x + 39 * scale,
         y - 15 * scale,
