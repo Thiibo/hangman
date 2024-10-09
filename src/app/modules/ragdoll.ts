@@ -5,11 +5,11 @@ export function createSimulation() {
     if (parentElement.querySelector('canvas')) return; // prevent spawning multiple canvasses
 
     // create engine
-    var engine = Engine.create(),
+    const engine = Engine.create(),
         world = engine.world;
 
     // create renderer
-    var render = Render.create({
+    const render = Render.create({
         element: parentElement,
         engine: engine,
         options: {
@@ -22,7 +22,7 @@ export function createSimulation() {
     Render.run(render);
 
     // create runner
-    var runner = Runner.create();
+    const runner = Runner.create();
     Runner.run(runner, engine);
 
     const ragdollSize = 1.3;
@@ -351,7 +351,7 @@ function createRagdoll(x: number, y: number, scale: number = 1) {
         }
     });
 
-    var ragdoll = Composite.create({
+    return Composite.create({
         bodies: [
             chest, head, leftLowerArm, leftUpperArm, handle,
             rightLowerArm, rightUpperArm, leftLowerLeg, 
@@ -363,6 +363,4 @@ function createRagdoll(x: number, y: number, scale: number = 1) {
             upperToLowerRightLeg, chestToLeftUpperLeg, chestToRightUpperLeg
         ]
     });
-
-    return ragdoll;
 };
