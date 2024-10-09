@@ -211,7 +211,9 @@ function createRagdoll(x: number, y: number, scale: number = 1) {
         bodyB: rightLowerArm,
         render: {
             visible: true
-        }
+        },
+        stiffness: 1,
+        damping: 0
     });
     const chestToRightUpperArm = Constraint.create({
         bodyA: chest,
