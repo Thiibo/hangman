@@ -15,7 +15,7 @@ export class HangmanGame {
     }
 
     get currentWordStatus() {
-        return Array.from(this.secretWord).map(letter => this.guessedLetters.get(letter) ? letter : '_').join('');
+        return Array.from(this.secretWord).map(letter => this.guessedLetters.get(letter) ? letter : null);
     }
 
     get isLost() {

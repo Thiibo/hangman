@@ -17,12 +17,12 @@ export default function Home() {
 }
 
 function WordStateDisplay({ game } : { game: HangmanGame }) {
-  const letters = Array.from(game.currentWordStatus).map(letter => (
-    <div className="p-6 text-6xl">{letter}</div>
+  const letters = game.currentWordStatus.map(letter => (
+    <div className="p-6 h-1 w-1 text-6xl border-b-4 white">{letter}</div>
   ));
 
   return (
-    <div className="row-start-3 flex gap-2 flex-wrap items-center justify-center">
+    <div className="row-start-3 flex gap-10 flex-wrap items-center justify-center">
       {letters}
     </div>
   )
