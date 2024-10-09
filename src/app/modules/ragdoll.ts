@@ -25,12 +25,21 @@ export function createSimulation() {
     var runner = Runner.create();
     Runner.run(runner, engine);
 
-    const ragdoll = createRagdoll(200, 200, 1.3);
+    const ragdollSize = 1.3;
+    const ragdoll = createRagdoll(0, 0, ragdollSize);
     Composite.add(world, ragdoll);
+
+    const pointer = Vector.create();
+
+    document.addEventListener('mousemove', e => {
+        pointer.x = e.clientX / ragdollSize;
+        pointer.y = e.clientY / ragdollSize - 50;
+        console.log(pointer)
+    });
 
     Events.on(engine, 'afterUpdate', function(event) {
         const handle = ragdoll.bodies.find(body => body.label === "handle")!;
-        Body.applyForce(handle, handle.position, Vector.mult(Vector.sub(Vector.create(200, 200), handle.position), 0.001))
+        Body.applyForce(handle, handle.position, Vector.mult(Vector.sub(pointer, handle.position), 0.001))
     });
 
     // add mouse control and make the mouse revolute
