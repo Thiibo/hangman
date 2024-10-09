@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { letters } from "../modules/constants";
 import { pickRandomItemFromArray } from "../modules/helper-functions";
 import words from 'an-array-of-english-words';
+import { createSimulation } from "../modules/ragdoll";
 
 export function Game() {
     const [secretWord, setSecretWord] = useState<string>('');
@@ -11,6 +12,7 @@ export function Game() {
 
     useEffect(() => {
         resetGame();
+        createSimulation();
     }, []);
 
     function resetGame() {
