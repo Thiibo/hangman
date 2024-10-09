@@ -34,31 +34,12 @@ export function createSimulation() {
     document.addEventListener('mousemove', e => {
         pointer.x = e.clientX / ragdollSize;
         pointer.y = e.clientY / ragdollSize - 50;
-        console.log(pointer)
     });
 
     Events.on(engine, 'afterUpdate', function(event) {
         const handle = ragdoll.bodies.find(body => body.label === "handle")!;
         Body.applyForce(handle, handle.position, Vector.mult(Vector.sub(pointer, handle.position), 0.001))
     });
-
-    // add mouse control and make the mouse revolute
-    var mouse = Mouse.create(render.canvas),
-        mouseConstraint = MouseConstraint.create(engine, {
-            mouse: mouse,
-            constraint: {
-                stiffness: 0.6,
-                length: 0,
-                render: {
-                    visible: false
-                },
-            },
-        });
-
-    Composite.add(world, mouseConstraint);
-
-    // keep the mouse in sync with rendering
-    render.mouse = mouse;
 
     // fit the render viewport to the scene
     Render.lookAt(render, {
