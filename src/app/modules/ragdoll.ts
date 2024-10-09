@@ -1,4 +1,4 @@
-import { Bodies, Composite, Engine, Runner, Render, Common, Body, Constraint, Events, Mouse, MouseConstraint } from "matter-js";
+import { Bodies, Composite, Engine, Runner, Render, Vector, Body, Constraint, Events, Mouse, MouseConstraint } from "matter-js";
 
 export function createSimulation() {
     const parentElement =  document.querySelector('#ragdoll') as HTMLElement;
@@ -25,10 +25,12 @@ export function createSimulation() {
     var runner = Runner.create();
     Runner.run(runner, engine);
 
-    const ragdoll = createRagdoll(200, -1000, 1.3);
+    const ragdoll = createRagdoll(200, 200, 1.3);
     Composite.add(world, ragdoll);
 
     Events.on(engine, 'afterUpdate', function(event) {
+        const handle = ragdoll.bodies.find(body => body.label === "handle")!;
+        Body.applyForce(handle, handle.position, Vector.mult(Vector.sub(Vector.create(200, 200), handle.position), 0.001))
     });
 
     // add mouse control and make the mouse revolute
@@ -101,8 +103,8 @@ function createRagdoll(x: number, y: number, scale: number) {
     var leftLowerArmOptions = structuredClone(leftArmOptions);
     leftLowerArmOptions.render.fillStyle = '#E59B12'
 
-    var rightUpperArmHandleOptions = {
-        label: 'right-upper-arm-handle',
+    var handleOptions = {
+        label: 'handle',
         collisionFilter: {
             group: Body.nextGroup(true)
         },
@@ -164,7 +166,7 @@ function createRagdoll(x: number, y: number, scale: number) {
 
     var head = Bodies.rectangle(x, y - 60 * scale, 34 * scale, 40 * scale, headOptions);
     var chest = Bodies.rectangle(x, y, 55 * scale, 80 * scale, chestOptions);
-    var rightUpperArmHandle = Bodies.rectangle(x + 39 * scale, y + 50 * scale, 20 * scale, 20 * scale, rightUpperArmHandleOptions);
+    var handle = Bodies.rectangle(x + 39 * scale, y + 50 * scale, 20 * scale, 20 * scale, handleOptions);
     var rightUpperArm = Bodies.rectangle(x + 39 * scale, y - 15 * scale, 20 * scale, 40 * scale, rightArmOptions);
     var rightLowerArm = Bodies.rectangle(x + 39 * scale, y + 25 * scale, 20 * scale, 60 * scale, rightLowerArmOptions);
     var leftUpperArm = Bodies.rectangle(x - 39 * scale, y - 15 * scale, 20 * scale, 40 * scale, leftArmOptions);
@@ -175,7 +177,7 @@ function createRagdoll(x: number, y: number, scale: number) {
     var rightLowerLeg = Bodies.rectangle(x + 20 * scale, y + 97 * scale, 20 * scale, 60 * scale, rightLowerLegOptions);
 
     var handleConstraint = Constraint.create({
-        bodyA: rightUpperArmHandle,
+        bodyA: handle,
         pointA: {
             x: -10 * scale,
             y: 0
@@ -185,7 +187,6 @@ function createRagdoll(x: number, y: number, scale: number) {
             y: 20 * scale
         },
         bodyB: rightLowerArm,
-        stiffness: 0,
         render: {
             visible: true
         }
@@ -355,7 +356,7 @@ function createRagdoll(x: number, y: number, scale: number) {
 
     var person = Composite.create({
         bodies: [
-            chest, head, leftLowerArm, leftUpperArm, rightUpperArmHandle,
+            chest, head, leftLowerArm, leftUpperArm, handle,
             rightLowerArm, rightUpperArm, leftLowerLeg, 
             rightLowerLeg, leftUpperLeg, rightUpperLeg
         ],
