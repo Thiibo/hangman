@@ -101,6 +101,19 @@ function createRagdoll(x: number, y: number, scale: number) {
     var leftLowerArmOptions = structuredClone(leftArmOptions);
     leftLowerArmOptions.render.fillStyle = '#E59B12'
 
+    var rightUpperArmHandleOptions = {
+        label: 'right-upper-arm-handle',
+        collisionFilter: {
+            group: Body.nextGroup(true)
+        },
+        chamfer: {
+            radius: 10 * scale
+        },
+        render: {
+            fillStyle: '#FFBC42'
+        }
+    };
+
     var rightArmOptions = {
         label: 'right-arm',
         collisionFilter: {
@@ -151,6 +164,7 @@ function createRagdoll(x: number, y: number, scale: number) {
 
     var head = Bodies.rectangle(x, y - 60 * scale, 34 * scale, 40 * scale, headOptions);
     var chest = Bodies.rectangle(x, y, 55 * scale, 80 * scale, chestOptions);
+    var rightUpperArmHandle = Bodies.rectangle(x + 39 * scale, y + 50 * scale, 20 * scale, 20 * scale, rightUpperArmHandleOptions);
     var rightUpperArm = Bodies.rectangle(x + 39 * scale, y - 15 * scale, 20 * scale, 40 * scale, rightArmOptions);
     var rightLowerArm = Bodies.rectangle(x + 39 * scale, y + 25 * scale, 20 * scale, 60 * scale, rightLowerArmOptions);
     var leftUpperArm = Bodies.rectangle(x - 39 * scale, y - 15 * scale, 20 * scale, 40 * scale, leftArmOptions);
@@ -159,6 +173,23 @@ function createRagdoll(x: number, y: number, scale: number) {
     var leftLowerLeg = Bodies.rectangle(x - 20 * scale, y + 97 * scale, 20 * scale, 60 * scale, leftLowerLegOptions);
     var rightUpperLeg = Bodies.rectangle(x + 20 * scale, y + 57 * scale, 20 * scale, 40 * scale, rightLegOptions);
     var rightLowerLeg = Bodies.rectangle(x + 20 * scale, y + 97 * scale, 20 * scale, 60 * scale, rightLowerLegOptions);
+
+    var handleConstraint = Constraint.create({
+        bodyA: rightUpperArmHandle,
+        pointA: {
+            x: -10 * scale,
+            y: 0
+        },
+        pointB: {
+            x: 0,
+            y: 20 * scale
+        },
+        bodyB: rightLowerArm,
+        stiffness: 0,
+        render: {
+            visible: true
+        }
+    });
 
     var chestToRightUpperArm = Constraint.create({
         bodyA: chest,
@@ -324,12 +355,12 @@ function createRagdoll(x: number, y: number, scale: number) {
 
     var person = Composite.create({
         bodies: [
-            chest, head, leftLowerArm, leftUpperArm, 
+            chest, head, leftLowerArm, leftUpperArm, rightUpperArmHandle,
             rightLowerArm, rightUpperArm, leftLowerLeg, 
             rightLowerLeg, leftUpperLeg, rightUpperLeg
         ],
         constraints: [
-            upperToLowerLeftArm, upperToLowerRightArm, chestToLeftUpperArm, 
+            upperToLowerLeftArm, upperToLowerRightArm, handleConstraint, chestToLeftUpperArm, 
             chestToRightUpperArm, headContraint, upperToLowerLeftLeg, 
             upperToLowerRightLeg, chestToLeftUpperLeg, chestToRightUpperLeg,
             legToLeg
