@@ -37,7 +37,7 @@ export function createSimulation() {
 
     const pointer = Vector.create();
     document.addEventListener('mousemove', e => {
-        pointer.x = e.clientX / ragdollSize;
+        pointer.x = e.clientX / ragdollSize - 150;
         pointer.y = e.clientY / ragdollSize - 50;
     });
 
