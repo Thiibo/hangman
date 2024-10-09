@@ -58,9 +58,7 @@ export function createSimulation() {
     });
 };
 
-function createRagdoll(x: number, y: number, scale: number) {
-    scale = typeof scale === 'undefined' ? 1 : scale;
-    
+function createRagdoll(x: number, y: number, scale: number = 1) {
     const head = Bodies.rectangle(
         x,
         y - 60 * scale,
@@ -361,7 +359,7 @@ function createRagdoll(x: number, y: number, scale: number) {
         }
     });
 
-    var person = Composite.create({
+    var ragdoll = Composite.create({
         bodies: [
             chest, head, leftLowerArm, leftUpperArm, handle,
             rightLowerArm, rightUpperArm, leftLowerLeg, 
@@ -374,5 +372,5 @@ function createRagdoll(x: number, y: number, scale: number) {
         ]
     });
 
-    return person;
+    return ragdoll;
 };
