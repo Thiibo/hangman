@@ -60,80 +60,65 @@ export function createSimulation() {
 
 function createRagdoll(x: number, y: number, scale: number) {
     scale = typeof scale === 'undefined' ? 1 : scale;
-
-    var headOptions = {
-        label: 'head',
-        collisionFilter: {
-            group: Body.nextGroup(true)
-        },
-        chamfer: {
-            radius: [15 * scale, 15 * scale, 15 * scale, 15 * scale]
-        },
-        render: {
-            fillStyle: '#FFBC42'
+    
+    const head = Bodies.rectangle(
+        x,
+        y - 60 * scale,
+        34 * scale,
+        40 * scale,
+        {
+            label: 'head',
+            collisionFilter: {
+                group: Body.nextGroup(true)
+            },
+            chamfer: {
+                radius: [15 * scale, 15 * scale, 15 * scale, 15 * scale]
+            },
+            render: {
+                fillStyle: '#FFBC42'
+            }
         }
-    };
+    );
 
-    var chestOptions = {
-        label: 'chest',
-        collisionFilter: {
-            group: Body.nextGroup(true)
-        },
-        chamfer: {
-            radius: [20 * scale, 20 * scale, 26 * scale, 26 * scale]
-        },
-        render: {
-            fillStyle: '#E0A423'
+    const chest = Bodies.rectangle(
+        x,
+        y,
+        55 * scale,
+        80 * scale,
+        {
+            label: 'chest',
+            collisionFilter: {
+                group: Body.nextGroup(true)
+            },
+            chamfer: {
+                radius: [20 * scale, 20 * scale, 26 * scale, 26 * scale]
+            },
+            render: {
+                fillStyle: '#E0A423'
+            }
         }
-    };
+    );
 
-    var leftArmOptions = {
-        label: 'left-arm',
-        collisionFilter: {
-            group: Body.nextGroup(true)
-        },
-        chamfer: {
-            radius: 10 * scale
-        },
-        render: {
-            fillStyle: '#FFBC42'
+    const handle = Bodies.rectangle(
+        x + 39 * scale,
+        y + 50 * scale,
+        20 * scale,
+        20 * scale,
+        {
+            label: 'handle',
+            collisionFilter: {
+                group: Body.nextGroup(true)
+            },
+            chamfer: {
+                radius: 10 * scale
+            },
+            render: {
+                fillStyle: '#FFBC42'
+            }
         }
-    };
+    );
 
-    var leftLowerArmOptions = structuredClone(leftArmOptions);
-    leftLowerArmOptions.render.fillStyle = '#E59B12'
-
-    var handleOptions = {
-        label: 'handle',
-        collisionFilter: {
-            group: Body.nextGroup(true)
-        },
-        chamfer: {
-            radius: 10 * scale
-        },
-        render: {
-            fillStyle: '#FFBC42'
-        }
-    };
-
-    var rightArmOptions = {
-        label: 'right-arm',
-        collisionFilter: {
-            group: Body.nextGroup(true)
-        },
-        chamfer: {
-            radius: 10 * scale
-        },
-        render: {
-            fillStyle: '#FFBC42'
-        }
-    };
-
-    var rightLowerArmOptions = structuredClone(rightArmOptions);
-    rightLowerArmOptions.render.fillStyle = '#E59B12'
-
-    var leftLegOptions = {
-        label: 'left-leg',
+    const defaultLimbOptions = {
         collisionFilter: {
             group: Body.nextGroup(true)
         },
@@ -145,38 +130,87 @@ function createRagdoll(x: number, y: number, scale: number) {
         }
     };
 
-    var leftLowerLegOptions = structuredClone(leftLegOptions);
-    leftLowerLegOptions.render.fillStyle = '#E59B12'
-
-    var rightLegOptions = {
-        label: 'right-leg',
-        collisionFilter: {
-            group: Body.nextGroup(true)
-        },
-        chamfer: {
-            radius: 10 * scale
-        },
-        render: {
-            fillStyle: '#FFBC42'
+    const rightUpperArm = Bodies.rectangle(
+        x + 39 * scale,
+        y - 15 * scale,
+        20 * scale,
+        40 * scale,
+        {
+            ...defaultLimbOptions,
+            label: 'right-upper-arm'
         }
-    };
-
-    var rightLowerLegOptions = structuredClone(rightLegOptions);
-    rightLowerLegOptions.render.fillStyle = '#E59B12'
-
-    var head = Bodies.rectangle(x, y - 60 * scale, 34 * scale, 40 * scale, headOptions);
-    var chest = Bodies.rectangle(x, y, 55 * scale, 80 * scale, chestOptions);
-    var handle = Bodies.rectangle(x + 39 * scale, y + 50 * scale, 20 * scale, 20 * scale, handleOptions);
-    var rightUpperArm = Bodies.rectangle(x + 39 * scale, y - 15 * scale, 20 * scale, 40 * scale, rightArmOptions);
-    var rightLowerArm = Bodies.rectangle(x + 39 * scale, y + 25 * scale, 20 * scale, 60 * scale, rightLowerArmOptions);
-    var leftUpperArm = Bodies.rectangle(x - 39 * scale, y - 15 * scale, 20 * scale, 40 * scale, leftArmOptions);
-    var leftLowerArm = Bodies.rectangle(x - 39 * scale, y + 25 * scale, 20 * scale, 60 * scale, leftLowerArmOptions);
-    var leftUpperLeg = Bodies.rectangle(x - 20 * scale, y + 57 * scale, 20 * scale, 40 * scale, leftLegOptions);
-    var leftLowerLeg = Bodies.rectangle(x - 20 * scale, y + 97 * scale, 20 * scale, 60 * scale, leftLowerLegOptions);
-    var rightUpperLeg = Bodies.rectangle(x + 20 * scale, y + 57 * scale, 20 * scale, 40 * scale, rightLegOptions);
-    var rightLowerLeg = Bodies.rectangle(x + 20 * scale, y + 97 * scale, 20 * scale, 60 * scale, rightLowerLegOptions);
-
-    var handleConstraint = Constraint.create({
+    );
+    const rightLowerArm = Bodies.rectangle(
+        x + 39 * scale,
+        y + 25 * scale,
+        20 * scale,
+        60 * scale,
+        {
+            ...defaultLimbOptions,
+            label: 'right-lower-arm'
+        }
+    );
+    const leftUpperArm = Bodies.rectangle(
+        x - 39 * scale,
+        y - 15 * scale,
+        20 * scale,
+        40 * scale,
+        {
+            ...defaultLimbOptions,
+            label: 'left-upper-arm'
+        }
+    );
+    const leftLowerArm = Bodies.rectangle(
+        x - 39 * scale,
+        y + 25 * scale,
+        20 * scale,
+        60 * scale,
+        {
+            ...defaultLimbOptions,
+            label: 'left-lower-arm'
+        }
+    );
+    const leftUpperLeg = Bodies.rectangle(
+        x - 20 * scale,
+        y + 57 * scale,
+        20 * scale,
+        40 * scale,
+        {
+            ...defaultLimbOptions,
+            label: 'left-upper-leg'
+        }
+    );
+    const leftLowerLeg = Bodies.rectangle(
+        x - 20 * scale,
+        y + 97 * scale,
+        20 * scale,
+        60 * scale,
+        {
+            ...defaultLimbOptions,
+            label: 'left-lower-leg'
+        }
+    );
+    const rightUpperLeg = Bodies.rectangle(
+        x + 20 * scale,
+        y + 57 * scale,
+        20 * scale,
+        40 * scale,
+        {
+            ...defaultLimbOptions,
+            label: 'right-upper-leg'
+        }
+    );
+    const rightLowerLeg = Bodies.rectangle(
+        x + 20 * scale,
+        y + 97 * scale,
+        20 * scale,
+        60 * scale,
+        {
+            ...defaultLimbOptions,
+            label: 'right-lower-leg'
+        }
+    );
+    const handleConstraint = Constraint.create({
         bodyA: handle,
         pointA: {
             x: -10 * scale,
@@ -191,8 +225,7 @@ function createRagdoll(x: number, y: number, scale: number) {
             visible: true
         }
     });
-
-    var chestToRightUpperArm = Constraint.create({
+    const chestToRightUpperArm = Constraint.create({
         bodyA: chest,
         pointA: {
             x: 24 * scale,
@@ -208,8 +241,7 @@ function createRagdoll(x: number, y: number, scale: number) {
             visible: false
         }
     });
-
-    var chestToLeftUpperArm = Constraint.create({
+    const chestToLeftUpperArm = Constraint.create({
         bodyA: chest,
         pointA: {
             x: -24 * scale,
@@ -225,8 +257,7 @@ function createRagdoll(x: number, y: number, scale: number) {
             visible: false
         }
     });
-
-    var chestToLeftUpperLeg = Constraint.create({
+    const chestToLeftUpperLeg = Constraint.create({
         bodyA: chest,
         pointA: {
             x: -10 * scale,
@@ -242,8 +273,7 @@ function createRagdoll(x: number, y: number, scale: number) {
             visible: false
         }
     });
-
-    var chestToRightUpperLeg = Constraint.create({
+    const chestToRightUpperLeg = Constraint.create({
         bodyA: chest,
         pointA: {
             x: 10 * scale,
@@ -259,8 +289,7 @@ function createRagdoll(x: number, y: number, scale: number) {
             visible: false
         }
     });
-
-    var upperToLowerRightArm = Constraint.create({
+    const upperToLowerRightArm = Constraint.create({
         bodyA: rightUpperArm,
         bodyB: rightLowerArm,
         pointA: {
@@ -276,8 +305,7 @@ function createRagdoll(x: number, y: number, scale: number) {
             visible: false
         }
     });
-
-    var upperToLowerLeftArm = Constraint.create({
+    const upperToLowerLeftArm = Constraint.create({
         bodyA: leftUpperArm,
         bodyB: leftLowerArm,
         pointA: {
@@ -293,8 +321,7 @@ function createRagdoll(x: number, y: number, scale: number) {
             visible: false
         }
     });
-
-    var upperToLowerLeftLeg = Constraint.create({
+    const upperToLowerLeftLeg = Constraint.create({
         bodyA: leftUpperLeg,
         bodyB: leftLowerLeg,
         pointA: {
@@ -310,8 +337,7 @@ function createRagdoll(x: number, y: number, scale: number) {
             visible: false
         }
     });
-
-    var upperToLowerRightLeg = Constraint.create({
+    const upperToLowerRightLeg = Constraint.create({
         bodyA: rightUpperLeg,
         bodyB: rightLowerLeg,
         pointA: {
