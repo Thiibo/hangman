@@ -1,4 +1,14 @@
-import { Bodies, Composite, Engine, Runner, Render, Vector, Body, Constraint, Events, Mouse, MouseConstraint } from "matter-js";
+import {
+    Bodies,
+    Composite,
+    Engine,
+    Runner,
+    Render,
+    Vector,
+    Body,
+    Constraint,
+    Events
+} from "matter-js";
 
 export function createSimulation() {
     const parentElement =  document.querySelector('#ragdoll') as HTMLElement;
