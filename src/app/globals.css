@@ -20,6 +20,18 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+button {
+  @apply bg-transparent border-solid border-gray-600 border-2 rounded-md py-1 px-1 m-1;
+}
+
+button:hover {
+  @apply border-white;
+}
+
+button:disabled {
+  @apply border-gray-800 text-gray-800;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
