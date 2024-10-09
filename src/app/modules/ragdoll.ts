@@ -199,6 +199,7 @@ function createRagdoll(x: number, y: number, scale: number) {
             label: 'right-lower-leg'
         }
     );
+    
     const handleConstraint = Constraint.create({
         bodyA: handle,
         pointA: {
@@ -343,7 +344,7 @@ function createRagdoll(x: number, y: number, scale: number) {
         }
     });
 
-    var headContraint = Constraint.create({
+    const headContraint = Constraint.create({
         bodyA: head,
         pointA: {
             x: 0,
@@ -360,15 +361,6 @@ function createRagdoll(x: number, y: number, scale: number) {
         }
     });
 
-    var legToLeg = Constraint.create({
-        bodyA: leftLowerLeg,
-        bodyB: rightLowerLeg,
-        stiffness: 0.01,
-        render: {
-            visible: false
-        }
-    });
-
     var person = Composite.create({
         bodies: [
             chest, head, leftLowerArm, leftUpperArm, handle,
@@ -378,8 +370,7 @@ function createRagdoll(x: number, y: number, scale: number) {
         constraints: [
             upperToLowerLeftArm, upperToLowerRightArm, handleConstraint, chestToLeftUpperArm, 
             chestToRightUpperArm, headContraint, upperToLowerLeftLeg, 
-            upperToLowerRightLeg, chestToLeftUpperLeg, chestToRightUpperLeg,
-            legToLeg
+            upperToLowerRightLeg, chestToLeftUpperLeg, chestToRightUpperLeg
         ]
     });
 
