@@ -99,7 +99,10 @@ function createRagdoll(x: number, y: number, scale: number = 1) {
         20 * scale,
         {
             ...defaultLimbOptions,
-            label: 'handle'
+            label: 'handle',
+            render: {
+                visible: false
+            }
         }
     );
     const rightUpperArm = Bodies.rectangle(
@@ -195,7 +198,7 @@ function createRagdoll(x: number, y: number, scale: number = 1) {
         },
         bodyB: rightLowerArm,
         render: {
-            visible: true
+            visible: false
         },
         stiffness: 1,
         damping: 0
