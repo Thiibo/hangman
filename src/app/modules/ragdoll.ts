@@ -4,11 +4,8 @@ export function createSimulation() {
     const parentElement =  document.querySelector('#ragdoll') as HTMLElement;
     if (parentElement.querySelector('canvas')) return; // prevent spawning multiple canvasses
 
-    // create engine
-    const engine = Engine.create(),
-        world = engine.world;
-
-    // create renderer
+    const engine = Engine.create();
+    const world = engine.world;
     const render = Render.create({
         element: parentElement,
         engine: engine,
@@ -21,7 +18,6 @@ export function createSimulation() {
 
     Render.run(render);
 
-    // create runner
     const runner = Runner.create();
     Runner.run(runner, engine);
 
@@ -30,7 +26,6 @@ export function createSimulation() {
     Composite.add(world, ragdoll);
 
     const pointer = Vector.create();
-
     document.addEventListener('mousemove', e => {
         pointer.x = e.clientX / ragdollSize;
         pointer.y = e.clientY / ragdollSize - 50;
@@ -41,7 +36,7 @@ export function createSimulation() {
         Body.applyForce(handle, handle.position, Vector.mult(Vector.sub(pointer, handle.position), 0.001))
     });
 
-    // fit the render viewport to the scene
+    // Fit the render viewport to the scene
     Render.lookAt(render, {
         min: { x: 0, y: 0 },
         max: { x: 800, y: 600 }
