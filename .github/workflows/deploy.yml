@@ -13,7 +13,7 @@ jobs:
       - name: Setup Node.js for use with actions
         uses: actions/setup-node@v2
         with:
-          version:  12.x
+          version: 20.x
 
       - name: Checkout branch
         uses: actions/checkout@v2
