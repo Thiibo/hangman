@@ -25,11 +25,6 @@ jobs:
       - name: Build static pages
         run: npm run build
 
-      - name: Run deploy script
-        run: |
-          git config user.name "actions" && git config user.email "actions@github.com"
-          npm run deploy
-      
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
