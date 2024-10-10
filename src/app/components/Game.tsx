@@ -7,7 +7,6 @@ import { RagdollSimulation } from "../modules/ragdoll";
 
 export function Game() {
     const [secretWord, setSecretWord] = useState<string>('');
-    const [wrongGuessesLeft, setWrongGuessesLeft] = useState<number>(0);
     const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
     const [simulation, setSimulation] = useState<RagdollSimulation>();
     const [wins, setWins] = useState<number>(0);
@@ -24,7 +23,6 @@ export function Game() {
 
     function resetGame() {
         setSecretWord(pickRandomItemFromArray(words));
-        setWrongGuessesLeft(10);
         setGuessedLetters([]);
         if (simulation) simulation.resetStages();
     }
@@ -47,7 +45,6 @@ export function Game() {
                 resetGame();
             }
         } else {
-            setWrongGuessesLeft(wrongGuessesLeft - 1);
             simulation.nextStage();
 
             if (simulation.isFinalStage) {
