@@ -115,10 +115,17 @@ export class RagdollSimulation {
     }
 
     resetStages() {
-        this.ragdoll.bodies.forEach(body => Composite.remove(this.ragdoll, body));
+        Composite.remove(this.engine.world, this.ragdoll);
+        this.ragdoll = Composite.create();
+        Composite.add(this.engine.world, this.ragdoll);
+
+        this.ragdollObjectStages = createRagdollObjectStages(0, 0, 1.3);
+        this.ragdollStage = -1;
+        this.nextStage();
+    }
+
+    obliterateRagdoll() {
         this.ragdoll.constraints.forEach(constraint => Composite.remove(this.ragdoll, constraint));
-        Composite.add(this.ragdoll, this.ragdollObjectStages[0]);
-        this.ragdollStage = 1;
     }
 }
 
