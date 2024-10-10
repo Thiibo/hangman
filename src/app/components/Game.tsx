@@ -50,7 +50,8 @@ export function Game() {
             if (simulation.isFinalStage) {
                 setLosses(losses + 1);
                 simulation.obliterateRagdoll();
-                setTimeout(resetGame, 400);
+                setGuessedLetters(letters.split(''));
+                setTimeout(resetGame, 2000);
             }
         }
     }
