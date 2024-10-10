@@ -274,7 +274,7 @@ function createRagdollObjectStages(x: number, y: number, scale: number = 1): Com
         }
     );
     
-    const handleConstraint = Constraint.create({
+    const handleToRightLowerArm = Constraint.create({
         bodyA: handle,
         pointA: {
             x: -10 * scale,
@@ -420,7 +420,7 @@ function createRagdollObjectStages(x: number, y: number, scale: number = 1): Com
         }
     });
 
-    const headContraint = Constraint.create({
+    const headToChest = Constraint.create({
         bodyA: head,
         pointA: {
             x: 0,
@@ -439,13 +439,13 @@ function createRagdollObjectStages(x: number, y: number, scale: number = 1): Com
 
     return [
         [ handle ], // First is immediately added
-        [ rightLowerArm, handleConstraint ],
+        [ rightLowerArm, handleToRightLowerArm ],
         [ rightUpperArm, upperToLowerRightArm ],
         [ chest, chestToRightUpperArm ],
         [ rightUpperLeg, chestToRightUpperLeg ],
         [ leftUpperLeg, chestToLeftUpperLeg ],
         [ leftUpperArm, chestToLeftUpperArm ],
-        [ head, headContraint ],
+        [ head, headToChest ],
         [ leftLowerLeg, upperToLowerLeftLeg ],
         [ leftLowerArm, upperToLowerLeftArm ],
         [ rightLowerLeg, upperToLowerRightLeg ]
