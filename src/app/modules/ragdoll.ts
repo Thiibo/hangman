@@ -21,14 +21,13 @@ export class RagdollSimulation {
     private render: Render;
     private runner: Runner;
     private ragdoll: Composite;
-    private ragdollObjects: CompositeObject[][]
+    private ragdollObjectStages: CompositeObject[][]
     private ragdollStage: number;
 
     constructor(canvasParentElement: HTMLElement, objectSize: number = 1.3) {
         this.canvasParent = canvasParentElement;
         this.pointerPosition = Vector.create(0, 0);
         this.isAttached = false;
-        this.ragdollStage = 1;
         
         this.engine = Engine.create({
             gravity: Vector.create(0, 7),
@@ -47,8 +46,10 @@ export class RagdollSimulation {
         this.runner = Runner.create();
         Runner.run(this.runner, this.engine);
 
-        this.ragdollObjects = createRagdollObjects(0, 0, objectSize);
-        this.ragdoll = Composite.create({ bodies: this.ragdollObjects[0] as Body[] });
+        this.ragdollObjectStages = createRagdollObjectStages(0, 0, objectSize);
+        this.ragdoll = Composite.create();
+        this.ragdollStage = -1;
+        this.nextStage();
         Composite.add(this.engine.world, this.ragdoll);
 
         Events.on(this.engine, 'afterUpdate', this.onAfterUpdate.bind(this));
@@ -96,24 +97,24 @@ export class RagdollSimulation {
     }
 
     nextStage() {
-        const objects = this.ragdollObjects[this.ragdollStage];
+        this.ragdollStage++;
+        const objects = this.ragdollObjectStages[this.ragdollStage];
         objects
             .filter(obj => 'position' in obj)
             .forEach(body => Body.setPosition(body, Vector.add(body.position, this.pointerPosition)));
 
         Composite.add(this.ragdoll, objects);
-        this.ragdollStage++;
     }
 
     resetStages() {
         this.ragdoll.bodies.forEach(body => Composite.remove(this.ragdoll, body));
         this.ragdoll.constraints.forEach(constraint => Composite.remove(this.ragdoll, constraint));
-        Composite.add(this.ragdoll, this.ragdollObjects[0]);
+        Composite.add(this.ragdoll, this.ragdollObjectStages[0]);
         this.ragdollStage = 1;
     }
 }
 
-function createRagdollObjects(x: number, y: number, scale: number = 1): CompositeObject[][] {
+function createRagdollObjectStages(x: number, y: number, scale: number = 1): CompositeObject[][] {
     const head = Bodies.rectangle(
         x,
         y - 60 * scale,
