@@ -96,9 +96,12 @@ export class RagdollSimulation {
     }
 
     nextStage() {
-        Composite.add(this.ragdoll, this.ragdollObjects[this.ragdollStage]);
-        console.log("next stage!");
-        
+        const objects = this.ragdollObjects[this.ragdollStage];
+        objects
+            .filter(obj => 'position' in obj)
+            .forEach(body => Body.setPosition(body, Vector.add(body.position, this.pointerPosition)));
+
+        Composite.add(this.ragdoll, objects);
         this.ragdollStage++;
     }
 
