@@ -56,6 +56,10 @@ export class RagdollSimulation {
         this.onWindowResize();
     }
 
+    get isFinalStage(): boolean {
+        return this.ragdollStage === this.ragdollObjectStages.length - 1;
+    }
+
     attach() {
         if (this.isAttached) return; // Can't attach when already attached
         this.isAttached = true;

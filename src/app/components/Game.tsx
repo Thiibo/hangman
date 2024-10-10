@@ -26,6 +26,7 @@ export function Game() {
         setSecretWord(pickRandomItemFromArray(words));
         setWrongGuessesLeft(10);
         setGuessedLetters([]);
+        if (simulation) simulation.resetStages();
     }
 
     const getCurrentWordStatus = useCallback(() => {
@@ -33,14 +34,27 @@ export function Game() {
     }, [secretWord, guessedLetters])
 
     function guess(guessedLetter: string) {
+        if (!simulation) return;
         if (guessedLetter.length !== 1 || !letters.includes(guessedLetter)) {
             throw Error(`Incorrect argument: ${guessedLetter}. Please provide a single English letter.`);
         }
 
-        setGuessedLetters([...guessedLetters, guessedLetter]);
-        if (!secretWord.includes(guessedLetter)) {
+        const newGuessedLetters = [...guessedLetters, guessedLetter];
+        setGuessedLetters(newGuessedLetters);
+        if (secretWord.includes(guessedLetter)) {
+            if (Array.from(secretWord).every(letter => newGuessedLetters.includes(letter))) {
+                setWins(wins + 1);
+                resetGame();
+            }
+        } else {
             setWrongGuessesLeft(wrongGuessesLeft - 1);
-            simulation?.nextStage();
+            simulation.nextStage();
+
+            if (simulation.isFinalStage) {
+                setLosses(losses + 1);
+                simulation.obliterateRagdoll();
+                setTimeout(resetGame, 400);
+            }
         }
     }
 
