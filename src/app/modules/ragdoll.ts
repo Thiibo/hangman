@@ -30,7 +30,10 @@ export class RagdollSimulation {
         this.isAttached = false;
         this.ragdollStage = 1;
         
-        this.engine = Engine.create();
+        this.engine = Engine.create({
+            gravity: Vector.create(0, 7),
+        });
+
         this.render = Render.create({
             element: this.canvasParent,
             engine: this.engine,
