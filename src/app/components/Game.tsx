@@ -10,28 +10,27 @@ export function Game() {
     const [wrongGuessesLeft, setWrongGuessesLeft] = useState<number>(0);
     const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
     const [simulation, setSimulation] = useState<RagdollSimulation>();
+    const [wins, setWins] = useState<number>(0);
+    const [losses, setLosses] = useState<number>(0);
+
 
     useEffect(() => {
         resetGame();
+
+        const simulation = new RagdollSimulation(document.querySelector('#ragdoll') as HTMLElement);
+        setSimulation(simulation);
+        simulation.attach();
     }, []);
 
     function resetGame() {
         setSecretWord(pickRandomItemFromArray(words));
         setWrongGuessesLeft(10);
         setGuessedLetters([]);
-
-        const simulation = new RagdollSimulation(document.querySelector('#ragdoll') as HTMLElement);
-        setSimulation(simulation);
-        simulation.attach();
     }
 
     const getCurrentWordStatus = useCallback(() => {
         return Array.from(secretWord).map(letter => guessedLetters.includes(letter) ? letter : null);
     }, [secretWord, guessedLetters])
-
-    function isLost() {
-        return wrongGuessesLeft < 1;
-    }
 
     function guess(guessedLetter: string) {
         if (guessedLetter.length !== 1 || !letters.includes(guessedLetter)) {
@@ -49,6 +48,7 @@ export function Game() {
         <div className="w-full flex flex-col gap-20 row-start-2 items-center">
             <WordStateDisplay currentWordStatus={getCurrentWordStatus()} />
             <Keyboard guessedLetters={guessedLetters} guessLetter={guess} />
+            <Scoreboard wins={wins} losses={losses} />
         </div>
     )
 }
@@ -72,5 +72,14 @@ function Keyboard({ guessedLetters, guessLetter } : { guessedLetters: string[], 
 
     return (
         <div className="grid grid-cols-13">{keys}</div>
+    )
+}
+
+function Scoreboard({ wins, losses } : { wins: number, losses: number }) {
+    return (
+        <div className="fixed bottom-16 right-16 flex flex-col gap-5 text-3xl">
+            <span title="Wins" className="wins flex gap-5">{wins}</span>
+            <span title="Losses" className="losses flex gap-5">{losses}</span>
+        </div>
     )
 }

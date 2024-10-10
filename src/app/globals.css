@@ -37,3 +37,19 @@ button:disabled {
     text-wrap: balance;
   }
 }
+
+@layer page {
+  .wins::before, .losses::before {
+    content: '';
+    display: inline-block;
+    width: 2ch;
+    height: 2ch;
+    background: url('icons/wins.png');
+    background-size: contain;
+  }
+
+  .losses::before {
+    background: url('icons/losses.png');
+    background-size: contain;
+  }
+}
