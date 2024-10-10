@@ -53,12 +53,7 @@ export class RagdollSimulation {
         Composite.add(this.engine.world, this.ragdoll);
 
         Events.on(this.engine, 'afterUpdate', this.onAfterUpdate.bind(this));
-
-        // Fit the render viewport to the scene
-        Render.lookAt(this.render, {
-            min: { x: 0, y: 0 },
-            max: { x: 800, y: 600 }
-        });
+        this.onWindowResize();
     }
 
     attach() {
@@ -88,8 +83,8 @@ export class RagdollSimulation {
 
     private onWindowResize() {
         const rect = document.body.getBoundingClientRect();
-        this.render.canvas.width = rect.width;
-        this.render.canvas.height = rect.height;
+        this.render.canvas.width = rect.width * window.devicePixelRatio;
+        this.render.canvas.height = rect.height * window.devicePixelRatio;
     }
 
     private onMouseMove(e: MouseEvent) {
