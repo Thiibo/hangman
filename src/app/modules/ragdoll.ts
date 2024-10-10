@@ -32,7 +32,9 @@ export function createSimulation() {
     Runner.run(runner, engine);
 
     const ragdollSize = 1.3;
-    const ragdoll = createRagdoll(0, 0, ragdollSize);
+    const ragdollObjects = createRagdollObjects(0, 0, ragdollSize);
+    const ragdoll = Composite.create({ bodies: ragdollObjects[0] as Body[] });
+    let ragdollStage = 1;
     Composite.add(world, ragdoll);
 
     const pointer = Vector.create();
@@ -51,9 +53,16 @@ export function createSimulation() {
         min: { x: 0, y: 0 },
         max: { x: 800, y: 600 }
     });
+
+    return () => {
+        Composite.add(ragdoll, ragdollObjects[ragdollStage]);
+        console.log("next stage!");
+        
+        ragdollStage++;
+    }
 };
 
-function createRagdoll(x: number, y: number, scale: number = 1) {
+function createRagdollObjects(x: number, y: number, scale: number = 1): (Body | Composite | Constraint)[][] {
     const head = Bodies.rectangle(
         x,
         y - 60 * scale,
@@ -359,16 +368,17 @@ function createRagdoll(x: number, y: number, scale: number = 1) {
         }
     });
 
-    return Composite.create({
-        bodies: [
-            chest, head, leftLowerArm, leftUpperArm, handle,
-            rightLowerArm, rightUpperArm, leftLowerLeg, 
-            rightLowerLeg, leftUpperLeg, rightUpperLeg
-        ],
-        constraints: [
-            upperToLowerLeftArm, upperToLowerRightArm, handleConstraint, chestToLeftUpperArm, 
-            chestToRightUpperArm, headContraint, upperToLowerLeftLeg, 
-            upperToLowerRightLeg, chestToLeftUpperLeg, chestToRightUpperLeg
-        ]
-    });
+    return [
+        [ handle ], // First is immediately added
+        [ rightLowerArm, handleConstraint ],
+        [ rightUpperArm, upperToLowerRightArm ],
+        [ chest, chestToRightUpperArm ],
+        [ rightUpperLeg, chestToRightUpperLeg ],
+        [ leftUpperLeg, chestToLeftUpperLeg ],
+        [ leftUpperArm, chestToLeftUpperArm ],
+        [ head, headContraint ],
+        [ leftLowerLeg, upperToLowerLeftLeg ],
+        [ leftLowerArm, upperToLowerLeftArm ],
+        [ rightLowerLeg, upperToLowerRightLeg ]
+    ]
 };
