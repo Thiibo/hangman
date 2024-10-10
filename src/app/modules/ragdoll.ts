@@ -147,7 +147,7 @@ function createRagdollObjects(x: number, y: number, scale: number = 1): Composit
             }
         }
     );
-    const defaultLimbOptions = {
+    const defaultLimbOptions: Matter.IChamferableBodyDefinition = {
         collisionFilter: {
             group: Body.nextGroup(true)
         },
@@ -156,7 +156,8 @@ function createRagdollObjects(x: number, y: number, scale: number = 1): Composit
         },
         render: {
             fillStyle: '#FFBC42'
-        }
+        },
+        mass: 2
     };
 
     const handle = Bodies.rectangle(
@@ -169,7 +170,8 @@ function createRagdollObjects(x: number, y: number, scale: number = 1): Composit
             label: 'handle',
             render: {
                 visible: false
-            }
+            },
+            mass: 1
         }
     );
     const rightUpperArm = Bodies.rectangle(
