@@ -95,7 +95,8 @@ export class RagdollSimulation {
     private onAfterUpdate() {
         if (!this.ragdoll) return;
         const handle = this.ragdoll.bodies.find(body => body.label === "handle")!;
-        const forceToApply = Vector.mult(Vector.sub(this.pointerPosition, handle.position), 0.001);
+        const delta = Vector.add(Vector.sub(this.pointerPosition, handle.position), Vector.create(0, -20));
+        const forceToApply = Vector.mult(delta, 0.004);
         Body.applyForce(handle, handle.position, forceToApply);
     }
 
