@@ -3,22 +3,26 @@ import { useCallback, useEffect, useState } from "react";
 import { letters } from "../modules/constants";
 import { pickRandomItemFromArray } from "../modules/helper-functions";
 import words from 'an-array-of-english-words';
-import { createSimulation } from "../modules/ragdoll";
+import { RagdollSimulation } from "../modules/ragdoll";
 
 export function Game() {
     const [secretWord, setSecretWord] = useState<string>('');
     const [wrongGuessesLeft, setWrongGuessesLeft] = useState<number>(0);
     const [guessedLetters, setGuessedLetters] = useState<string[]>([]);
+    const [simulation, setSimulation] = useState<RagdollSimulation>();
 
     useEffect(() => {
         resetGame();
-        createSimulation();
     }, []);
 
     function resetGame() {
         setSecretWord(pickRandomItemFromArray(words));
-        setWrongGuessesLeft(3);
+        setWrongGuessesLeft(10);
         setGuessedLetters([]);
+
+        const simulation = new RagdollSimulation(document.querySelector('#ragdoll') as HTMLElement);
+        setSimulation(simulation);
+        simulation.attach();
     }
 
     const getCurrentWordStatus = useCallback(() => {
@@ -35,7 +39,10 @@ export function Game() {
         }
 
         setGuessedLetters([...guessedLetters, guessedLetter]);
-        if (!secretWord.includes(guessedLetter)) setWrongGuessesLeft(wrongGuessesLeft - 1);
+        if (!secretWord.includes(guessedLetter)) {
+            setWrongGuessesLeft(wrongGuessesLeft - 1);
+            simulation?.nextStage();
+        }
     }
 
     return (

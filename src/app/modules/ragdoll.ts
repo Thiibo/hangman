@@ -2,6 +2,7 @@ import {
     Bodies,
     Composite,
     Engine,
+    World,
     Runner,
     Render,
     Vector,
@@ -10,59 +11,103 @@ import {
     Events
 } from "matter-js";
 
-export function createSimulation() {
-    const parentElement =  document.querySelector('#ragdoll') as HTMLElement;
-    if (parentElement.querySelector('canvas')) return; // prevent spawning multiple canvasses
+type CompositeObject = (Body | Constraint);
+export class RagdollSimulation {
+    private canvasParent: HTMLElement;
+    private pointerPosition: Vector;
+    private isAttached: boolean;
 
-    const engine = Engine.create();
-    const world = engine.world;
-    const render = Render.create({
-        element: parentElement,
-        engine: engine,
-        options: {
-            width: parentElement.clientWidth,
-            height: parentElement.clientHeight,
-            showAngleIndicator: true
-        }
-    });
+    private engine: Engine;
+    private render: Render;
+    private runner: Runner;
+    private ragdoll: Composite;
+    private ragdollObjects: CompositeObject[][]
+    private ragdollStage: number;
 
-    Render.run(render);
+    constructor(canvasParentElement: HTMLElement, objectSize: number = 1.3) {
+        this.canvasParent = canvasParentElement;
+        this.pointerPosition = Vector.create(0, 0);
+        this.isAttached = false;
+        this.ragdollStage = 1;
+        
+        this.engine = Engine.create();
+        this.render = Render.create({
+            element: this.canvasParent,
+            engine: this.engine,
+            options: {
+                width: this.canvasParent.clientWidth,
+                height: this.canvasParent.clientHeight,
+                showAngleIndicator: true
+            }
+        });
 
-    const runner = Runner.create();
-    Runner.run(runner, engine);
+        this.runner = Runner.create();
+        Runner.run(this.runner, this.engine);
 
-    const ragdollSize = 1.3;
-    const ragdollObjects = createRagdollObjects(0, 0, ragdollSize);
-    const ragdoll = Composite.create({ bodies: ragdollObjects[0] as Body[] });
-    let ragdollStage = 1;
-    Composite.add(world, ragdoll);
+        this.ragdollObjects = createRagdollObjects(0, 0, objectSize);
+        this.ragdoll = Composite.create({ bodies: this.ragdollObjects[0] as Body[] });
+        Composite.add(this.engine.world, this.ragdoll);
 
-    const pointer = Vector.create();
-    document.addEventListener('mousemove', e => {
-        pointer.x = e.clientX / ragdollSize - 150;
-        pointer.y = e.clientY / ragdollSize - 50;
-    });
+        Events.on(this.engine, 'afterUpdate', this.onAfterUpdate.bind(this));
 
-    Events.on(engine, 'afterUpdate', function(event) {
-        const handle = ragdoll.bodies.find(body => body.label === "handle")!;
-        Body.applyForce(handle, handle.position, Vector.mult(Vector.sub(pointer, handle.position), 0.001))
-    });
+        // Fit the render viewport to the scene
+        Render.lookAt(this.render, {
+            min: { x: 0, y: 0 },
+            max: { x: 800, y: 600 }
+        });
+    }
 
-    // Fit the render viewport to the scene
-    Render.lookAt(render, {
-        min: { x: 0, y: 0 },
-        max: { x: 800, y: 600 }
-    });
+    attach() {
+        if (this.isAttached) return; // Can't attach when already attached
+        this.isAttached = true;
+        Render.run(this.render);
+        document.addEventListener('mousemove', this.onMouseMove.bind(this));
+    }
 
-    return () => {
-        Composite.add(ragdoll, ragdollObjects[ragdollStage]);
+    detach() {
+        if (!this.isAttached) return; // Can't detach when already attached
+        this.isAttached = false;
+        document.removeEventListener('mousemove', this.onMouseMove);
+        Render.stop(this.render);
+        this.render.canvas.remove();
+        this.render.textures = {};
+    }
+
+    destroy() {
+        this.detach();
+        World.clear(this.engine.world, false);
+        Engine.clear(this.engine);
+        Runner.stop(this.runner);
+    }
+
+    private onMouseMove(e: MouseEvent) {
+        this.pointerPosition.x = e.clientX;
+        this.pointerPosition.y = e.clientY;
+    }
+
+    private onAfterUpdate() {
+        if (!this.ragdoll) return;
+        const handle = this.ragdoll.bodies.find(body => body.label === "handle")!;
+        const forceToApply = Vector.mult(Vector.sub(this.pointerPosition, handle.position), 0.001);
+        Body.applyForce(handle, handle.position, forceToApply);
+    }
+
+    nextStage() {
+        Composite.add(this.ragdoll, this.ragdollObjects[this.ragdollStage]);
         console.log("next stage!");
         
-        ragdollStage++;
+        this.ragdollStage++;
     }
-};
 
-function createRagdollObjects(x: number, y: number, scale: number = 1): (Body | Composite | Constraint)[][] {
+    resetStages() {
+        this.ragdoll.bodies.forEach(body => Composite.remove(this.ragdoll, body));
+        this.ragdoll.constraints.forEach(constraint => Composite.remove(this.ragdoll, constraint));
+        Composite.add(this.ragdoll, this.ragdollObjects[0]);
+        this.ragdollStage = 1;
+    }
+}
+
+function createRagdollObjects(x: number, y: number, scale: number = 1): CompositeObject[][] {
     const head = Bodies.rectangle(
         x,
         y - 60 * scale,
