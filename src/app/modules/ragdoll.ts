@@ -66,12 +66,14 @@ export class RagdollSimulation {
         this.isAttached = true;
         Render.run(this.render);
         document.addEventListener('mousemove', this.onMouseMove.bind(this));
+        window.addEventListener('resize', this.onWindowResize.bind(this));
     }
 
     detach() {
         if (!this.isAttached) return; // Can't detach when already attached
         this.isAttached = false;
         document.removeEventListener('mousemove', this.onMouseMove);
+        window.removeEventListener('resize', this.onWindowResize);
         Render.stop(this.render);
         this.render.canvas.remove();
         this.render.textures = {};
@@ -82,6 +84,12 @@ export class RagdollSimulation {
         World.clear(this.engine.world, false);
         Engine.clear(this.engine);
         Runner.stop(this.runner);
+    }
+
+    private onWindowResize() {
+        const rect = document.body.getBoundingClientRect();
+        this.render.canvas.width = rect.width;
+        this.render.canvas.height = rect.height;
     }
 
     private onMouseMove(e: MouseEvent) {
