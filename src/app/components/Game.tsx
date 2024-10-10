@@ -90,8 +90,8 @@ function Keyboard({ guessedLetters, guessLetter } : { guessedLetters: string[], 
 function Scoreboard({ wins, losses } : { wins: number, losses: number }) {
     return (
         <div className="fixed bottom-16 right-16 flex flex-col gap-5 text-3xl">
-            <span title="Wins" className="wins flex gap-5">{wins}</span>
-            <span title="Losses" className="losses flex gap-5">{losses}</span>
+            <span title="Wins" className="wins flex gap-5 text-white">{wins}</span>
+            <span title="Losses" className="losses flex gap-5 text-white">{losses}</span>
         </div>
     )
 }
