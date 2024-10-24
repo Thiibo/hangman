@@ -19,6 +19,10 @@ export function Game() {
         const simulation = new RagdollSimulation(document.querySelector('#ragdoll') as HTMLElement);
         setSimulation(simulation);
         simulation.attach();
+
+        return () => {
+            simulation.destroy();
+        };
     }, []);
 
     function resetGame() {
